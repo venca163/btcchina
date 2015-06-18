@@ -2,7 +2,7 @@
 
 
 - 1) download and install nodejs from nodejs.org (npm included)
-- 2) open cmd and navigate to folder with example strategy
-- 3) run "npm install socket.io-client"
-- 4) run "npm install btcchina" for testing trade api (in trade api folder)
-- 5) run example code with "node Dummy1.js"
+- 2) open cmd and navigate to root folder of git project
+- 3) run "npm install" (it will install dependencies from package.json)
+- 4) (fix node_modules/btcchina/btcchina.js -> copy-paste buy/sell methods and add "2" to the end)
+- 5) run example code with e.g. "node Dummy1.js"
