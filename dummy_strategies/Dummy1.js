@@ -1,6 +1,5 @@
-var BTCChina = require('btcchina');
 
-var io = require("socket.io-client");
+var io = require("../node_modules/socket.io-client");
 
 var Dummy1 = function () {
 
@@ -11,7 +10,6 @@ var Dummy1 = function () {
 
 	/* params end */
 
-	this.bc = new BTCChina();
 	this.socket = null;
 
 	this.trendData = [];

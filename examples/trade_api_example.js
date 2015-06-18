@@ -3,7 +3,7 @@ var key = '';
 var secret = ''; 
 //////////////////////////////////////
 
-var BTCChina = require('btcchina');
+var BTCChina = require('../node_modules/btcchina');
 var publicbtcchina = new BTCChina();
 var btcchina = new BTCChina(key, secret);
 
