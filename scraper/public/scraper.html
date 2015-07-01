@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BTCChina history data scraper</title>
+	
+	<link href="../css/jquery-ui.css" rel="stylesheet" type="text/css">
+	<link href="../css/datetimepicker.css" rel="stylesheet" type="text/css">
+	
+	<script src="../lib/jquery_2-1-4.js" type="text/javascript"></script>
+	<script src="../lib/jquery-ui.js" type="text/javascript"></script>
+	<script src="../lib/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+	
+	<style type="text/css">
+		
+		#getdata {
+			margin-top: 2em;
+		}
+		
+		#waiting, #waiting2, #result {
+			display: none;
+		}
+		#waiting.visible, #waiting2.visible, #result.visible {
+			margin-top: 2em;
+			display: block;
+		}
+		
+	</style>
+	
+</head>
+
+<body>
+
+	<h1>BTCChina history data scraper</h1>
+	
+	<div>
+		<h2>from</h2>
+		<input id="from" type="text" />
+		<h2>to</h2>
+		<input id="to" type="text" />
+		
+		<div id="waiting">
+			Getting data, wait prease...
+		</div>
+		<div id="waiting2">
+			Hord on, seriousry...it may take rearry rong, depends on size of time intervar you asking for...
+		</div>
+		<div id="result">
+		</div>
+		
+		
+		<div>
+			<button id="getdata">Get data!</button>
+		</div>
+	</div>
+	
+	<script>
+		
+		// polyfill
+		if (!String.prototype.format) {
+			String.prototype.format = function() {
+			  var args = arguments;
+			  return this.replace(/{(\d+)}/g, function(match, number) { 
+				return typeof args[number] != 'undefined'
+				  ? args[number]
+				  : match
+				;
+			  });
+			};
+		  }
+		//////////
+		
+//		var whateveroriginUrl = 'http://whateverorigin.org/get?url={0}&callback=?';
+		var apiTradeUrl = "https://data.btcchina.com/data/historydata?since={0}&limit=5000&sincetype=time";
+		
+		var scraperUrl = "http://localhost:2302/btcchina?fromTs={0}&toTs={1}";
+		
+		var fromInput = $("#from");
+		var toInput = $("#to");
+		var getdata = $("#getdata");
+		var waiting = $("#waiting");
+		var waiting2 = $("#waiting2");
+		var result = $("#result");
+		
+		fromInput.datetimepicker();
+		toInput.datetimepicker();
+		
+		console.log(fromInput);
+		console.log(toInput);
+
+	
+		getdata.on("click", function(ev) {
+			
+			result.empty();
+			waiting.addClass("visible");
+			var waiting2msgId = setTimeout(function() {
+				waiting2.addClass("visible")
+			}, 5000);
+			
+//			var toVal = toInput.datetimepicker("getDate") / 1000;
+			var fromTimestamp = new Date(fromInput.val()).getTime() / 1000;
+			var toTimestamp = new Date(toInput.val()).getTime() / 1000;
+			
+			var url = scraperUrl.format(fromTimestamp, toTimestamp);
+			
+			$.ajax({
+				type: 'GET',
+				url: url,
+				dataType: "json"
+			})
+			.done(function(resp) {
+				
+				console.log(resp);
+				
+				clearTimeout(waiting2msgId);
+				waiting.removeClass("visible");
+				waiting2.removeClass("visible");
+				
+				var downloadElem = $(document.createElement("a"));
+				downloadElem.attr('href', resp.path + resp.fileName);
+				downloadElem.attr('download', resp.fileName);
+				downloadElem.text(resp.fileName);
+				result.append(downloadElem);
+				result.addClass("visible");
+			})
+			.fail(function (jqXHR, textStatus, errorThrown) {
+				
+				clearTimeout(waiting2msgId);
+				waiting.removeClass("visible");
+				waiting2.removeClass("visible");
+				
+				var errorMsg = $(document.createElement("p"));
+				errorMsg.text(textStatus);
+				result.append(errorMsg);
+				result.text("Sorry, something went wrong. ");
+				result.addClass("visible");
+			})
+			
+			// SOP problem, whateverorigin problem with parametrized URLs
+//			$.ajax({
+//				type: "GET",
+//				url: whateveroriginUrl.format(urlEncoded),
+//				dataType: "json",
+//			})
+//			.done(function(data) {
+//				
+//				console.log("done");
+//				console.log(data);
+//				
+//			});
+//			
+
+		});
+		
+	</script>
+</body>
+
+</html> 

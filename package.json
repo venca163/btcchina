@@ -3,8 +3,10 @@
   "description": "",
   "author": "Veseli bratri",
   "dependencies": {
-    "socket.io-client": "1.3.x",
-	"btcchina": "0.0.2"
+    "socket.io-client": "~1.3.x",
+	"btcchina": "~0.0.2",
+	"express": "~4.x",
+	"chalk": "~1.x.x"
   },
   "engine": "node >= 0.10.0"
 }
