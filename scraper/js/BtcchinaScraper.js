@@ -1,6 +1,7 @@
 
 var http = require('http');
 var helpers = require('./helpers/helpers');
+var chalk = require('chalk');
 var err = helpers.err;
 var succ = helpers.succ;
 
@@ -23,7 +24,17 @@ BtcchinaScraper.prototype.scrapeTrades = function (fromTs, toTs, success, fail) 
 	
 	var this2 = this;
 	var processPartDataFunc = function (partData) {
-
+		
+		console.log(partData.length);
+		if (!partData || partData.length === 0) {
+			
+			console.log(chalk.cyan("going to sleep mode for 10 s"));
+			setTimeout(function() {
+				this2._getTrades(completedData[completedData.length - 1].date, processPartDataFunc, fail);
+			}, 40 * 1000);
+			return;
+		}
+		
 		var lastTrade = partData[partData.length - 1];
 		// test if we already reached to-timestamp within this partData
 		if (lastTrade.date > toTs) {
@@ -44,6 +55,7 @@ BtcchinaScraper.prototype.scrapeTrades = function (fromTs, toTs, success, fail) 
 		else {
 			completedData = completedData.concat(partData);
 			console.log("data processed");
+			
 			this2._getTrades(lastTrade.date, processPartDataFunc, fail);
 		} 
 	};

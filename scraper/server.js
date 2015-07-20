@@ -47,9 +47,18 @@ app.get('/btcchina', function (req, res) {
 		
 		succ("data obtained! (size " + data.length + ")");
 		
-		var pathPrefix = "public/"
+		if (data.length === 0) {
+			res.json({
+				data: [],
+				path: "",
+				fileName: ""
+			});
+			return;
+		}
+		
+		var pathPrefix = "public/";
 		var path = "downloads/";
-		var fileName = data[0].date + ".json"
+		var fileName = data[0].date + ".json";
 //		var strData = JSON.stringify(data);
 		console.log("saving file to ", path + fileName);
 		fs.writeFile(pathPrefix + path + fileName, JSON.stringify(data), function(error) {
@@ -64,6 +73,7 @@ app.get('/btcchina', function (req, res) {
 					path: path,
 					fileName: fileName
 				});
+				return;
 			}
 		})
 		

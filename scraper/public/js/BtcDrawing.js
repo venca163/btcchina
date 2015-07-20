@@ -1,0 +1,8 @@
+
+
+var BtcDrawing = function() {
+	
+	
+};
+
+BtcDrawing
